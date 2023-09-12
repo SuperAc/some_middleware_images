@@ -1,0 +1,35 @@
+## 添加kubectl 和docker命令行工具
+FROM jenkins/inbound-agent:latest
+
+USER root
+RUN echo "${TIMEZONE}" > /etc/timezone \
+    && echo "$LANG UTF-8" > /etc/locale.gen \
+    && apt-get update -q \
+    && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
+    && mkdir -p /root/.kube
+
+COPY kubectl /usr/local/bin/kubectl
+
+
+# java/字符集/DinD/svn/jnlp
+# RUN  apt-get install -yq curl apt-utils dialog locales  apt-transport-https build-essential bzip2 ca-certificates  sudo jq unzip zip gnupg2 software-properties-common \
+#      && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
+    #  && 
+RUN apt-get update -y \
+    && apt-get install -y ca-certificates curl gnupg \
+    && install -m 0755 -d /etc/apt/keyrings \
+    && curl -fsSL https://download.docker.com/linux/debian/gpg |  gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
+    && chmod a+r /etc/apt/keyrings/docker.gpg \
+    # && echo  "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian  "$(. /etc/os-release ; echo "$VERSION_CODENAME")" stable" | \
+    # && tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    # && echo   "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+    # && "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" |    tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian   bullseye stable" > /etc/apt/sources.list.d/docker.list \
+    && apt-get update -y \
+    && apt-get install -y docker-ce 
+
+USER jenkins
+
+WORKDIR /home/jenkins
+
+ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
