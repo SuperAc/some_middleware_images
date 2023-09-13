@@ -15,12 +15,12 @@ git add ***
 # -s Signed-off-by  
 git commit git -s -m "修改内容"
 
-# pust
-git pust --set-upstream orgin newBranch
+# push
+git push --set-upstream orgin newBranch
 
 # 进入github 确认，没问题就可以提交 并申请合并
 # 合并后同步
-git chechout main
+git checkout main
 
 # 加一次就行
 git remote add upstream https://github.com/****（仓库地址） 
