@@ -35,7 +35,7 @@ git pull upstream main
 git push
 
 # 如果分支合并了，后续需要修改，切换分支需要rebase, 不然两次修改会重复
-git chechout newBranch
+git checkout newBranch
 
 git rebase main
 ```
