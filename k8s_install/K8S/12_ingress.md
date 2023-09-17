@@ -9,6 +9,8 @@ externalIPs: ['192.168.127.200'] （后面的IP是和nodeIP一个局域网的地
 
 service除了LoadBalancer，还可以使用nodeport和hostNetwork（这种就不需要svc了），如果使用hostNetwork，尽量将control指定到某一个节点上，同时设置toleration
 
+另外还可以使用daemonset，这种情况下K8S默认不会将pod调度到master节点，如果需要的话，在yaml文件中需要设置tolerations，hostnetwork为true
+
 相比较起来，nodePort部署模式中需要部署的ingress-controller容器较少。一个集群可以部署几个就可以了。而hostNetwork模式需要在每个节点部署一个ingress-controller容器，因此总起来消耗资源较多。另外一个比较直观的区别，nodePort模式主要占用的是svc的nodePort端口。而hostNetwork则需要占用物理机的80和443端口。
 
 从网络流转来说，通过nodePort访问时，该node节点不一定部署了ingress-controller容器。因此还需要iptables将其转发到部署有ingress-controller的节点上去，多了一层流转。
