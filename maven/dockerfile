@@ -1,0 +1,12 @@
+FROM maven:3.6-ibmjava-8-alpine
+
+COPY settings.xml /usr/share/maven/conf/settings.xml
+COPY ./repository /usr/share/maven/ref/repository
+
+RUN mkdir -p /usr/src/XABYJAVAAPI
+COPY ./XABYJAVAAPI  /usr/src/XABYJAVAAPI
+WORKDIR /usr/src/XABYJAVAAPI
+ENTRYPOINT ["/usr/local/bin/mvn-entrypoint.sh"]
+RUN  mvn install -DskipTests && cd xaby-common && mvn clean && mvn install \
+    && cd ../xaby-wanhao && mnv clean && mvn compile && mvn package -DskipTests
+CMD [ "/bin/sh" ]
